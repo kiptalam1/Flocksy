@@ -29,9 +29,9 @@ export async function createPost(req, res) {
 
 export async function getAllPosts(req, res) {
 	try {
-		const posts = await Post.find();
-		if (posts.length === 0)
-			return res.status(200).json({ posts, message: "No posts yet." });
+		const posts = await Post.find()
+			.populate("user", "firstName lastName email")
+			.sort({ createdAt: -1 });
 
 		return res.status(200).json({ posts });
 	} catch (error) {
