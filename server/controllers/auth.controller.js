@@ -40,3 +40,28 @@ export async function registerUser(req, res) {
 		res.status(500).json({ error: "Internal server error" });
 	}
 }
+
+
+export async function loginUser(req, res) {
+	const { email, password } = req.body;
+	try {
+		//check if the email exists;
+		const user = await User.findOne({ email });
+		if (!user)
+			return res
+				.status(404)
+				.json({ error: "User not found. Please try again." });
+
+		// if user exists, check password;
+		const correctPassword = await bcrypt.compare(password, user.password);
+		if (!correctPassword)
+			return res.status(400).json({ error: "Wrong password." });
+
+		//else send token;
+		user.password = undefined; // sanitize
+		sendToken(user, res, 200);
+	} catch (error) {
+		console.error("Login error", error.message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+}
