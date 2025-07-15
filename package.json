@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"description": "Facebook clone for the Odin Project's OdinBook",
 	"main": "server.js",
+	"type": "module",
 	"scripts": {
 		"dev": "nodemon server/server.js",
 		"start": "node server/server.js"
