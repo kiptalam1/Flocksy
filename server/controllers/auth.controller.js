@@ -65,3 +65,13 @@ export async function loginUser(req, res) {
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }
+
+
+export function logout(req, res) {
+	res.clearCookie("token", {
+		secure: process.env.NODE_ENV === "production", // dynamic for dev;
+		httpOnly: true,
+		sameSite: "strict",
+	});
+	res.status(200).json({ message: "Logged out" });
+}
