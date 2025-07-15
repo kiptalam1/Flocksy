@@ -5,6 +5,7 @@ const postSchema = new mongoose.Schema(
 		text: {
 			type: String,
 			required: true,
+			trim: true,
 		},
 		image: {
 			type: String,
@@ -15,16 +16,8 @@ const postSchema = new mongoose.Schema(
 			ref: "User",
 			required: true,
 		},
-		comments: [
-			{
-				type: mongoose.Schema.ObjectId,
-				ref: "Comment",
-			},
-		],
 	},
-	{
-		timestamps: true,
-	}
+	{ timestamps: true }
 );
 
 export default mongoose.model("Post", postSchema);
