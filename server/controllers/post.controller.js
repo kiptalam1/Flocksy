@@ -25,3 +25,17 @@ export async function createPost(req, res) {
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }
+
+
+export async function getAllPosts(req, res) {
+	try {
+		const posts = await Post.find();
+		if (posts.length === 0)
+			return res.status(200).json({ posts, message: "No posts yet." });
+
+		return res.status(200).json({ posts });
+	} catch (error) {
+		console.error("Error in fetching all Posts", error.message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+}
