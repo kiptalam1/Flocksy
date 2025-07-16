@@ -8,6 +8,7 @@ import {
 	deletePost,
 	getASinglePost,
 	getUserPosts,
+	likeUnlikePost,
 } from "../controllers/post.controller.js";
 import upload from "../middleware/upload.middleware.js";
 
@@ -18,6 +19,6 @@ router.get("/all", authenticateUser, getAllPosts);
 router.get("/post/:postId", authenticateUser, getASinglePost);
 router.delete("/post/:id", authenticateUser, deletePost);
 router.get("/user/:userId", authenticateUser, getUserPosts);
-
+router.post("/post/:id", authenticateUser, likeUnlikePost);
 
 export default router;

@@ -52,3 +52,31 @@ export async function deleteComment(req, res) {
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }
+
+
+export async function likeUnlikeComment(req, res) {
+	const { id: commentId } = req.params;
+	const userId = req.user.userId;
+	try {
+		const comment = await Comment.findById(commentId);
+		if (!comment) return res.status(404).json({ error: "Comment not found." });
+
+		// check if user has already liked the comment;
+		const hasLikedComment = comment.likes.includes(userId);
+		// if true then unlike the comment;
+		if (hasLikedComment) {
+			comment.likes = comment.likes.filter(
+				(user) => user.toString() !== userId
+			);
+		} else {
+			// otherwise like the post;
+			comment.likes.push(userId);
+		}
+		await comment.save();
+
+		return res.status(200).json({ message: "success", comment });
+	} catch (error) {
+		console.error("Error in likeUnlikeComment", error.message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+}
