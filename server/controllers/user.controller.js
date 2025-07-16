@@ -43,3 +43,22 @@ export async function getAnotherUserProfile(req, res) {
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }
+
+
+export async function searchUsers(req, res) {
+	const { query } = req.query;
+	try {
+		const users = await User.find({
+			$or: [
+				{ firstName: { $regex: query, $options: "i" } },
+				{ lastName: { $regex: query, $options: "i" } },
+				{ email: { $regex: query, $options: "i" } },
+			],
+		}).select("-password -__v");
+
+		return res.status(200).json({ users });
+	} catch (error) {
+		console.error("Error in search users function", error.message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+}
