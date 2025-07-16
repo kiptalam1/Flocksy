@@ -16,14 +16,13 @@ export async function sendFriendRequest(req, res) {
 				{
 					sender: senderId,
 					receiver: receiverId,
-					status: "pending",
 				},
 				{
 					sender: receiverId,
 					receiver: senderId,
-					status: "pending",
 				},
 			],
+			status: { $in: ["pending", "accepted"] },
 		});
 
 		if (existing) {
@@ -40,6 +39,38 @@ export async function sendFriendRequest(req, res) {
 			.json({ message: "Friend request sent.", request: newRequest });
 	} catch (error) {
 		console.error("Error in sendFriendRequest :", error.message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+}
+
+export async function acceptFriendRequest(req, res) {
+	const { requestId } = req.params;
+	const userId = req.user.userId;
+
+	try {
+		// find if friend request exists;
+		const request = await FriendRequest.findById(requestId);
+		if (!request || request.receiver.toString() !== userId) {
+			return res.status(404).json({ error: "Friend request not found." });
+		}
+		if (request.status !== "pending") {
+			return res.status(400).json({ error: "Request already handled." });
+		}
+
+		request.status = "accepted";
+		await request.save();
+
+		// add both users as friends;
+		await User.findByIdAndUpdate(request.sender, {
+			$addToSet: { friends: request.receiver },
+		});
+		await User.findByIdAndUpdate(request.receiver, {
+			$addToSet: { friends: request.sender },
+		});
+
+		return res.status(200).json({ message: "Friend request accepted." });
+	} catch (error) {
+		console.error("Error in accept friend request", error.message);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }
