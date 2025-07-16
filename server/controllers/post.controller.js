@@ -76,7 +76,7 @@ export async function deletePost(req, res) {
 }
 
 export async function getASinglePost(req, res) {
-	const { id: postId } = req.params;
+	const { postId } = req.params;
 	try {
 		// fetch post from db;
 		const post = await Post.findById(postId).populate(
@@ -96,3 +96,16 @@ export async function getASinglePost(req, res) {
 	}
 }
 
+export async function getUserPosts(req, res) {
+	const { userId } = req.params;
+	try {
+		const posts = await Post.find({ user: userId })
+			.populate("user", "firstName lastName profileImage")
+			.sort({ createdAt: -1 });
+
+		return res.status(200).json({ posts });
+	} catch (error) {
+		console.error("Error in get user posts", error.message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+}

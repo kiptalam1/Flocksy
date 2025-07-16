@@ -7,6 +7,7 @@ import {
 	getAllPosts,
 	deletePost,
 	getASinglePost,
+	getUserPosts,
 } from "../controllers/post.controller.js";
 import upload from "../middleware/upload.middleware.js";
 
@@ -14,7 +15,9 @@ const router = express.Router();
 
 router.post("/create", authenticateUser, upload.single("image"), createPost);
 router.get("/all", authenticateUser, getAllPosts);
-router.delete("/:id", authenticateUser, deletePost);
-router.get("/:id", authenticateUser, getASinglePost);
+router.get("/post/:postId", authenticateUser, getASinglePost);
+router.delete("/post/:id", authenticateUser, deletePost);
+router.get("/user/:userId", authenticateUser, getUserPosts);
+
 
 export default router;
