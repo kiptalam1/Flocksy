@@ -51,25 +51,47 @@ export async function deletePost(req, res) {
 		if (!post) return res.status(404).json({ error: "Post not found." });
 
 		// check if my post;
-
 		if (userId !== post.user.toString())
 			return res
 				.status(403)
 				.json({ error: "You can only delete your own post." });
 
-		// Delete image from Cloudinary
+		// Delete image from Cloudinary first;
 		if (post.image) {
 			const publicId = post.image.split("/").slice(-1)[0].split(".")[0];
 			await cloudinary.uploader.destroy(`flocksy/posts/${publicId}`);
 		}
 
-		// Delete all related comments
+		// Delete all related comments;
 		await Comment.deleteMany({ post: post._id });
 
+		// finally delete the post;
 		await post.deleteOne();
+
 		res.status(200).json({ message: "Post was deleted successfully" });
 	} catch (error) {
 		console.error("Error in delete Post :", error.message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+}
+
+export async function getASinglePost(req, res) {
+	const { id: postId } = req.params;
+	try {
+		// fetch post from db;
+		const post = await Post.findById(postId).populate(
+			"user",
+			"firstName lastName profileImage"
+		);
+		if (!post) return res.status(404).json({ error: "Post not found" });
+		// check if post contains comments;
+		const comments = await Comment.find({ post: postId })
+			.populate("user", "firstName lastName profileImage")
+			.sort({ createdAt: -1 }); // latest comment at the top;
+		// return both the post and comments;
+		return res.status(200).json({ post, comments });
+	} catch (error) {
+		console.error("Error in get a single post", error.message);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }
