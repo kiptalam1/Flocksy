@@ -28,3 +28,27 @@ export async function createComment(req, res) {
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }
+
+
+export async function deleteComment(req, res) {
+	const { id: commentId } = req.params;
+	const userId = req.user.userId;
+	try {
+		const comment = await Comment.findById(commentId);
+		if (!comment) return res.status(404).json({ error: "Comment not found." });
+
+		// check if post belongs to user;
+		if (userId !== comment.user.toString()) {
+			return res
+				.status(403)
+				.json({ error: "You can only delete your own comment." });
+		}
+
+		// finally delete the comment;
+		await comment.deleteOne();
+		return res.status(200).json({ message: "Comment deleted successfully." });
+	} catch (error) {
+		console.error("Error in delete comment", error.message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+}
