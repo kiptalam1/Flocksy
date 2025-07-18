@@ -1,20 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
+	const [formData, setFormData] = useState({
+		email: "",
+		password: "",
+	});
 	const navigate = useNavigate();
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormData((prev) => ({ ...prev, [name]: value }));
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		try {
+			const res = await fetch("/api/auth/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(formData),
+			});
+			const data = await res.json();
+			if (!res.ok) {
+				toast.error(data?.error || "Login failed!");
+				setTimeout(() => {
+					navigate("/");
+				}, 0);
+				return; // to prevent further execution;
+			}
+			// console.log("data :", data);
+
+			toast.success(data?.message || "Success");
+			setTimeout(() => navigate("/home"), 0);
+		} catch (error) {
+			console.error("Error logging in user", error.message);
+			toast.error(error.message || "Something went wrong!");
+		}
+	};
+
 	return (
 		<div className="flex-1 max-w-md w-full bg-white 	dark:bg-gray-800 rounded-lg shadow-md p-6">
-			<form className="flex flex-col gap-4 w-full">
+			<form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit}>
 				<input
 					className="border border-gray-300 py-2 px-4 text-base rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 					type="email"
+					onChange={handleChange}
+					value={formData.email}
 					name="email"
 					placeholder="Email address"
 				/>
 				<input
 					className="border border-gray-300 py-2 px-4 text-base rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 					type="password"
+					onChange={handleChange}
+					value={formData.password}
 					name="password"
 					placeholder="Password"
 				/>
