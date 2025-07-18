@@ -1,16 +1,16 @@
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import Homepage from "./pages/Homepage";
-import RegisterForm from "./components/RegisterForm";
+import LandingPage from "./pages/LandingPage";
+import RegisterPage from "./pages/RegisterPage";
 import LoginForm from "./components/LoginForm";
 function App() {
 	return (
 		<>
 			<Routes>
-				<Route path="/" element={<Homepage />} />
+				<Route path="/" element={<LandingPage />} />
 				<Route path="/auth/login" element={<LoginForm />} />
 
-				<Route path="/auth/register" element={<RegisterForm />} />
+				<Route path="/auth/register" element={<RegisterPage />} />
 			</Routes>
 			<Toaster />
 		</>
