@@ -8,13 +8,16 @@ const Posts = () => {
 	useEffect(() => {
 		const fetchAllPosts = async () => {
 			try {
-				const res = await fetch("/api/posts/all");
+				const res = await fetch("/api/posts/all", {
+					method: "GET",
+					credentials: "include", // important for cookie-based auth
+				});
 				const data = await res.json();
 				if (!res.ok) {
 					toast.error("Failed to fetch posts");
 					return;
 				}
-				// console.log("data :", data);
+				console.log("data :", data);
 				setPosts(data.posts);
 			} catch (error) {
 				console.error("Error fetching posts", error.message);

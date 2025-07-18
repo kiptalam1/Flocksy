@@ -10,9 +10,19 @@ import { useAuth } from "../contexts/AuthContext.jsx";
 const Post = ({ post }) => {
 	const { user } = useAuth();
 	const [likes, setLikes] = useState(post.likes || []);
+	const [isFriend, setIsFriend] = useState(
+		user.friends.includes(post.user._id)
+	);
+	const [requestStatus, setRequestStatus] = useState(
+		post?.requestStatus || "none"
+	);
 
 	const hasLiked = likes.includes(user._id);
+	// const isFriend = user.friends.includes(post.user._id);
+	const isMyPost = user._id === post.user._id;
 
+	// console.log("is my post", isMyPost);
+	// console.log("post", post);
 	const handleLike = async () => {
 		// Optimistic update
 		const updatedLikes = hasLiked
@@ -25,6 +35,7 @@ const Post = ({ post }) => {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ userId: user._id }),
+				credentials: "include", // important for cookie-based auth
 			});
 			const data = await res.json();
 			if (!res.ok) {
@@ -42,12 +53,54 @@ const Post = ({ post }) => {
 		}
 	};
 
+	const sendFriendRequest = async () => {
+		try {
+			const res = await fetch(`/api/friends/request/${post.user._id}`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include", // important for cookie-based auth
+			});
+			const data = await res.json();
+			console.log("Friend request data :", data);
+
+			if (!res.ok) {
+				toast.error(data?.error || "Follow request failed");
+				return;
+			}
+		} catch (error) {
+			console.error("Error sending friend request", error.message);
+			toast.error(error.message || "Something went wrong");
+		}
+	};
+
+	const unFriendUser = async () => {
+		try {
+			const res = await fetch(`/api/friends/unfriend/${post.user?._id}`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				credentials: "include",
+			});
+			const data = await res.json();
+			console.log("data :", data);
+			if (!res.ok) {
+				toast.error(data?.error || "Failed to unfollow");
+				return;
+			}
+			toast.success(data?.message || "Success");
+		} catch (error) {
+			console.error("Error in unfriend user :", error.message);
+			toast.error("Something went wrong!");
+		}
+	};
+
 	return (
 		<div className="flex flex-col gap-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-md max-w-md w-full h-auto p-4 shadow-lg">
 			<div className="flex gap-3 items-center">
 				<img
 					className="size-10 rounded-full object-cover"
-					src={post?.user?.profileImage}
+					src={post?.user?.profileImage || "avatar-placeholder.png"}
 					alt={post?.user?.firstName}
 				/>
 				<p className="text-base hover:underline cursor-pointer">
@@ -56,9 +109,36 @@ const Post = ({ post }) => {
 				<span className="text-xs text-gray-400">
 					{formatShortTime(post?.createdAt)}
 				</span>
-				<p className="ml-auto text-blue-600 cursor-pointer hover:underline">
-					Follow
-				</p>
+
+				{!isMyPost && (
+					<p
+						className={`ml-auto text-sm cursor-pointer ${
+							isFriend
+								? "text-red-500 hover:underline"
+								: requestStatus === "pending"
+								? "text-gray-400"
+								: "text-blue-600 hover:underline"
+						}`}
+						onClick={async () => {
+							if (isFriend) {
+								await unFriendUser();
+								setIsFriend(false);
+								setRequestStatus("none");
+							} else if (
+								requestStatus === "none" ||
+								requestStatus === "declined"
+							) {
+								await sendFriendRequest();
+								setRequestStatus("pending");
+							}
+						}}>
+						{isFriend
+							? "Unfollow"
+							: requestStatus === "pending"
+							? "Request Sent"
+							: "Follow"}
+					</p>
+				)}
 			</div>
 
 			<div className="text-base">{post?.text}</div>
