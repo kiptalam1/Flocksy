@@ -14,7 +14,7 @@ const Posts = () => {
 					toast.error("Failed to fetch posts");
 					return;
 				}
-				console.log("data :", data);
+				// console.log("data :", data);
 				setPosts(data.posts);
 			} catch (error) {
 				console.error("Error fetching posts", error.message);
