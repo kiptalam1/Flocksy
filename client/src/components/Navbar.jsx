@@ -10,7 +10,7 @@ const Navbar = () => {
 	const handleLogout = () => logout(() => navigate("/"));
 
 	return (
-		<div className="flex items-center justify-between px-6 h-20 shadow-md bg-white dark:bg-gray-900 min-w-full">
+		<div className="flex items-center justify-between px-6 h-24 shadow-md bg-white dark:bg-gray-900 min-w-full">
 			{/* Logo */}
 			<div
 				className="flex items-center gap-2 "
@@ -27,9 +27,16 @@ const Navbar = () => {
 
 			{/* User + Logout */}
 			<div className="flex items-center gap-4 mr-2">
-				<span className="text-sm text-gray-600 dark:text-gray-300">
-					{user?.firstName}
-				</span>
+				<div className="border-2 border-blue-500 rounded-full w-11 h-11">
+					<img
+						src={user?.profileImage || "/avatar-placeholder.png"}
+						className="w-10 h-10 rounded-full object-cover"
+					/>
+					<span className="text-xs text-gray-600 dark:text-gray-300">
+						{user?.firstName}
+					</span>
+				</div>
+
 				<FiLogOut
 					size={22}
 					className="text-gray-600 dark:text-gray-300 cursor-pointer hover:text-red-500 transition"

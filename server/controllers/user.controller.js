@@ -19,7 +19,7 @@ export async function getMyProfile(req, res) {
 	const userId = req.user.userId;
 
 	try {
-		const user = await User.findById(userId).select("-password");
+		const user = await User.findById(userId).populate().select("-password");
 		if (!user) {
 			return res.status(404).json({ error: "User not found" });
 		}
