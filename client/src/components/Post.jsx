@@ -8,13 +8,12 @@ import { formatShortTime } from "../utils/formatTime.js";
 import { useAuth } from "../contexts/AuthContext.jsx";
 
 const Post = ({ post }) => {
-	const { user, loading } = useAuth();
+	const { user } = useAuth();
 	const [likes, setLikes] = useState(post.likes || []);
 	const [isFriend, setIsFriend] = useState(post.requestStatus === "accepted");
 	const [requestStatus, setRequestStatus] = useState(
 		post.requestStatus || "none"
 	);
-
 
 	const hasLiked = likes.includes(user._id);
 	const isMyPost = user._id === post.user._id;
@@ -80,19 +79,43 @@ const Post = ({ post }) => {
 		}
 	};
 
+	const acceptRequest = async (requestId) => {
+		try {
+			const res = await fetch(`/api/friends/request/${requestId}/accept`, {
+				method: "PATCH",
+				headers: { "Content-Type": "application/json" },
+				credentials: "include",
+			});
+			const data = await res.json();
+			if (!res.ok)
+				return toast.error(data?.error || "Failed to accept request");
+
+			setIsFriend(true);
+			setRequestStatus("accepted");
+			toast.success(data?.message || "Request accepted");
+		} catch (error) {
+			console.error("acceptRequest error:", error.message);
+			toast.error("Something went wrong");
+		}
+	};
+
 	const handleFollowAction = async () => {
 		if (isFriend) {
 			await unFriendUser();
 		} else if (requestStatus === "none" || requestStatus === "declined") {
 			await sendFriendRequest();
+		} else if (requestStatus === "incoming") {
+			await acceptRequest(post.requestId); // 👈 Add this
 		}
 	};
 
 	const renderFollowText = () => {
 		if (isFriend) return "Unfollow";
 		if (requestStatus === "pending") return "Request Sent";
+		if (requestStatus === "incoming") return "Accept Request"; // 👈 new
 		return "Follow";
 	};
+
 
 	const followClass = isFriend
 		? "text-red-500 hover:underline"

@@ -41,6 +41,7 @@ export async function getAllPosts(req, res) {
 		const updatedPosts = await Promise.all(
 			posts.map(async (post) => {
 				let requestStatus = "none";
+				let requestId = null;
 
 				if (currentUser.friends.includes(post.user._id)) {
 					requestStatus = "accepted";
@@ -51,12 +52,19 @@ export async function getAllPosts(req, res) {
 							{ sender: post.user._id, receiver: currentUserId },
 						],
 					});
-					if (existing) requestStatus = existing.status;
+					if (existing) {
+						requestStatus =
+							existing.sender.toString() === currentUserId
+								? existing.status // "pending"
+								: "incoming"; // you received the request
+						requestId = existing._id;
+					}
 				}
 
 				return {
 					...post.toObject(),
 					requestStatus,
+					requestId,
 				};
 			})
 		);
