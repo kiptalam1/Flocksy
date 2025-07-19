@@ -1,7 +1,7 @@
 import Navbar from "../components/Navbar";
 import Posts from "../components/Posts";
 // import LeftPanel from "../components/LeftPanel"; // optional
-// import RightPanel from "../components/RightPanel"; // optional
+import RightPanel from "../components/RightPanel";
 
 const HomePage = () => {
 	return (
@@ -18,7 +18,7 @@ const HomePage = () => {
 				<Posts className="flex-1" />
 
 				{/* Right sidebar (optional) */}
-				{/* <RightPanel className="hidden lg:block w-1/4" /> */}
+				<RightPanel className="hidden lg:block w-1/4" />
 			</div>
 		</div>
 	);

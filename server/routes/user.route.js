@@ -10,6 +10,7 @@ import {
 	searchUsers,
 	updateProfileInfo,
 	updateProfileOrCoverImage,
+	fetchUserFriends,
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router.get("/all", authenticateUser, getAllUsers);
 router.get("/me", authenticateUser, getMyProfile);
 router.get("/user/:id", authenticateUser, getAnotherUserProfile);
 router.get("/search", authenticateUser, searchUsers);
+router.get("/friends", authenticateUser, fetchUserFriends);
 router.patch("/profile/update", authenticateUser, updateProfileInfo);
 router.patch(
 	"/upload-image",

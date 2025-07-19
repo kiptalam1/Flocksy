@@ -152,3 +152,24 @@ export async function updateProfileOrCoverImage(req, res) {
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }
+
+
+export async function fetchUserFriends(req, res) {
+	const userId = req.user.userId;
+
+	try {
+		const user = await User.findById(userId).select("friends");
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+
+		const friends = await User.find({ _id: { $in: user.friends } }).select(
+			"firstName lastName profileImage"
+		);
+
+		return res.status(200).json({ friends });
+	} catch (error) {
+		console.error("Error fetching friends:", error.message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+}
