@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import Contact from "./Contact";
 
-const RightPanel = () => {
+const RightPanel = ({ className = "" }) => {
 	const [friends, setFriends] = useState([]);
 
 	useEffect(() => {
@@ -29,7 +29,10 @@ const RightPanel = () => {
 		fetchFriends();
 	}, []);
 	return (
-		<div className="flex flex-col gap-3 items-center">
+		<div className={`flex flex-col gap-3 items-center ${className}`}>
+			<h2 className="text-gray-800 dark:text-gray-100 font-semibold text-lg">
+				Contacts
+			</h2>
 			{friends &&
 				friends.map((friend) => <Contact key={friend._id} friend={friend} />)}
 		</div>

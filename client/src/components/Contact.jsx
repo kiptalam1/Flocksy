@@ -17,4 +17,7 @@ const Contact = ({ friend }) => {
 	);
 };
 
+
+
+
 export default Contact;

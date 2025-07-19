@@ -10,15 +10,17 @@ const HomePage = () => {
 			<Navbar />
 
 			{/* Main content */}
-			<div className="flex flex-1 px-4 sm:px-12 py-4 gap-4">
+			<div className="flex flex-1  px-2 sm:px-4 py-4 gap-2">
 				{/* Left sidebar (optional) */}
 				{/* <LeftPanel className="hidden md:block w-1/4" /> */}
 
 				{/* Main content */}
-				<Posts className="flex-1" />
+				<div className="flex-1 flex justify-center">
+					<Posts className="w-full max-w-2xl" />
+				</div>
 
 				{/* Right sidebar (optional) */}
-				<RightPanel className="hidden lg:block w-1/4" />
+				<RightPanel className="hidden md:block w-1/4 flex-shrink-0" />
 			</div>
 		</div>
 	);

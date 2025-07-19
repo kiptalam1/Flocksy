@@ -4,7 +4,7 @@ import Post from "./Post";
 import { useAuth } from "../contexts/AuthContext";
 import Loader from "./Loader";
 
-const Posts = () => {
+const Posts = ({ className = "" }) => {
 	const [posts, setPosts] = useState([]);
 	const { user, loading } = useAuth();
 
@@ -43,7 +43,7 @@ const Posts = () => {
 		);
 
 	return (
-		<div className="flex flex-col gap-3 items-center">
+		<div className={`flex flex-col gap-3 ${className}`}>
 			{posts && posts.map((post) => <Post key={post._id} post={post} />)}
 		</div>
 	);
