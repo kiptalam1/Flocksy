@@ -10,21 +10,15 @@ import { useAuth } from "../contexts/AuthContext.jsx";
 const Post = ({ post }) => {
 	const { user } = useAuth();
 	const [likes, setLikes] = useState(post.likes || []);
-	const [isFriend, setIsFriend] = useState(
-		user.friends.includes(post.user._id)
-	);
+	const [isFriend, setIsFriend] = useState(post.requestStatus === "accepted");
 	const [requestStatus, setRequestStatus] = useState(
-		post?.requestStatus || "none"
+		post.requestStatus || "none"
 	);
 
 	const hasLiked = likes.includes(user._id);
-	// const isFriend = user.friends.includes(post.user._id);
 	const isMyPost = user._id === post.user._id;
 
-	// console.log("is my post", isMyPost);
-	// console.log("post", post);
 	const handleLike = async () => {
-		// Optimistic update
 		const updatedLikes = hasLiked
 			? likes.filter((id) => id !== user._id)
 			: [...likes, user._id];
@@ -35,17 +29,13 @@ const Post = ({ post }) => {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ userId: user._id }),
-				credentials: "include", // important for cookie-based auth
+				credentials: "include",
 			});
 			const data = await res.json();
-			if (!res.ok) {
-				throw new Error(data?.error || "Failed to like post");
-			}
-			// Sync with backend
+			if (!res.ok) throw new Error(data?.error || "Failed to like post");
 			setLikes(data.post.likes);
 		} catch (error) {
-			console.error("Error in handleLike function :", error.message);
-			// Revert optimistic update
+			console.error("handleLike error:", error.message);
 			setLikes(
 				hasLiked ? [...likes, user._id] : likes.filter((id) => id !== user._id)
 			);
@@ -57,43 +47,57 @@ const Post = ({ post }) => {
 		try {
 			const res = await fetch(`/api/friends/request/${post.user._id}`, {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				credentials: "include", // important for cookie-based auth
+				headers: { "Content-Type": "application/json" },
+				credentials: "include",
 			});
 			const data = await res.json();
-			console.log("Friend request data :", data);
+			if (!res.ok) return toast.error(data?.error || "Follow request failed");
 
-			if (!res.ok) {
-				toast.error(data?.error || "Follow request failed");
-				return;
-			}
+			setRequestStatus("pending");
 		} catch (error) {
-			console.error("Error sending friend request", error.message);
-			toast.error(error.message || "Something went wrong");
+			console.error("sendFriendRequest error:", error.message);
+			toast.error("Something went wrong");
 		}
 	};
 
 	const unFriendUser = async () => {
 		try {
-			const res = await fetch(`/api/friends/unfriend/${post.user?._id}`, {
-				method: "POST",
+			const res = await fetch(`/api/friends/unfriend/${post.user._id}`, {
+				method: "DELETE",
 				headers: { "Content-Type": "application/json" },
 				credentials: "include",
 			});
 			const data = await res.json();
-			console.log("data :", data);
-			if (!res.ok) {
-				toast.error(data?.error || "Failed to unfollow");
-				return;
-			}
+			if (!res.ok) return toast.error(data?.error || "Failed to unfollow");
+
 			toast.success(data?.message || "Success");
+			setIsFriend(false);
+			setRequestStatus("none");
 		} catch (error) {
-			console.error("Error in unfriend user :", error.message);
-			toast.error("Something went wrong!");
+			console.error("unFriendUser error:", error.message);
+			toast.error("Something went wrong");
 		}
 	};
+
+	const handleFollowAction = async () => {
+		if (isFriend) {
+			await unFriendUser();
+		} else if (requestStatus === "none" || requestStatus === "declined") {
+			await sendFriendRequest();
+		}
+	};
+
+	const renderFollowText = () => {
+		if (isFriend) return "Unfollow";
+		if (requestStatus === "pending") return "Request Sent";
+		return "Follow";
+	};
+
+	const followClass = isFriend
+		? "text-red-500 hover:underline"
+		: requestStatus === "pending"
+		? "text-gray-400"
+		: "text-blue-600 hover:underline";
 
 	return (
 		<div className="flex flex-col gap-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-md max-w-md w-full h-auto p-4 shadow-lg">
@@ -112,31 +116,9 @@ const Post = ({ post }) => {
 
 				{!isMyPost && (
 					<p
-						className={`ml-auto text-sm cursor-pointer ${
-							isFriend
-								? "text-red-500 hover:underline"
-								: requestStatus === "pending"
-								? "text-gray-400"
-								: "text-blue-600 hover:underline"
-						}`}
-						onClick={async () => {
-							if (isFriend) {
-								await unFriendUser();
-								setIsFriend(false);
-								setRequestStatus("none");
-							} else if (
-								requestStatus === "none" ||
-								requestStatus === "declined"
-							) {
-								await sendFriendRequest();
-								setRequestStatus("pending");
-							}
-						}}>
-						{isFriend
-							? "Unfollow"
-							: requestStatus === "pending"
-							? "Request Sent"
-							: "Follow"}
+						className={`ml-auto text-sm cursor-pointer ${followClass}`}
+						onClick={handleFollowAction}>
+						{renderFollowText()}
 					</p>
 				)}
 			</div>

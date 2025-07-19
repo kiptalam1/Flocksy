@@ -2,6 +2,7 @@ import { cloudinary } from "../utils/cloudinary.util.js";
 import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 import Comment from "../models/comment.model.js";
+import FriendRequest from "../models/friendRequest.model.js";
 
 export async function createPost(req, res) {
 	try {
@@ -30,16 +31,43 @@ export async function createPost(req, res) {
 
 export async function getAllPosts(req, res) {
 	try {
+		const currentUserId = req.user.userId;
+		const currentUser = await User.findById(currentUserId);
+
 		const posts = await Post.find()
 			.populate("user", "firstName lastName email profileImage")
 			.sort({ createdAt: -1 });
 
-		return res.status(200).json({ posts });
+		const updatedPosts = await Promise.all(
+			posts.map(async (post) => {
+				let requestStatus = "none";
+
+				if (currentUser.friends.includes(post.user._id)) {
+					requestStatus = "accepted";
+				} else {
+					const existing = await FriendRequest.findOne({
+						$or: [
+							{ sender: currentUserId, receiver: post.user._id },
+							{ sender: post.user._id, receiver: currentUserId },
+						],
+					});
+					if (existing) requestStatus = existing.status;
+				}
+
+				return {
+					...post.toObject(),
+					requestStatus,
+				};
+			})
+		);
+
+		return res.status(200).json({ posts: updatedPosts });
 	} catch (error) {
 		console.error("Error in fetching all Posts", error.message);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }
+
 
 export async function deletePost(req, res) {
 	const userId = req.user.userId;
