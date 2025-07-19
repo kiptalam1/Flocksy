@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const LoginForm = () => {
 	const [formData, setFormData] = useState({
 		email: "",
 		password: "",
 	});
+	const { setUser } = useAuth();
+	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 
 	const handleChange = (e) => {
@@ -16,6 +19,8 @@ const LoginForm = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		setLoading(true);
+
 		try {
 			const res = await fetch("/api/auth/login", {
 				method: "POST",
@@ -27,6 +32,7 @@ const LoginForm = () => {
 			});
 			const data = await res.json();
 			if (!res.ok) {
+				setLoading(false);
 				toast.error(data?.error || "Login failed!");
 				setTimeout(() => {
 					navigate("/");
@@ -34,12 +40,14 @@ const LoginForm = () => {
 				return; // to prevent further execution;
 			}
 			// console.log("data :", data);
-
+			setUser(data.user);
 			toast.success(data?.message || "Success");
-			setTimeout(() => navigate("/home"), 0);
+			setLoading(false);
+			navigate("/home");
 		} catch (error) {
 			console.error("Error logging in user", error.message);
 			toast.error(error.message || "Something went wrong!");
+			setLoading(false);
 		}
 	};
 
@@ -65,7 +73,7 @@ const LoginForm = () => {
 				<button
 					className="bg-blue-600 hover:bg-blue-700 transition text-white py-2 px-4 text-base rounded-md font-medium cursor-pointer"
 					type="submit">
-					Log In
+					{loading ? "Loading..." : "Log In"}
 				</button>
 
 				<span className="text-sm self-center text-blue-600 font-sans hover:underline cursor-pointer">

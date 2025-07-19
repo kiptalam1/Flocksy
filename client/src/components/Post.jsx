@@ -8,12 +8,13 @@ import { formatShortTime } from "../utils/formatTime.js";
 import { useAuth } from "../contexts/AuthContext.jsx";
 
 const Post = ({ post }) => {
-	const { user } = useAuth();
+	const { user, loading } = useAuth();
 	const [likes, setLikes] = useState(post.likes || []);
 	const [isFriend, setIsFriend] = useState(post.requestStatus === "accepted");
 	const [requestStatus, setRequestStatus] = useState(
 		post.requestStatus || "none"
 	);
+
 
 	const hasLiked = likes.includes(user._id);
 	const isMyPost = user._id === post.user._id;
