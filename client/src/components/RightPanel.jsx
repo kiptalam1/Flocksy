@@ -19,7 +19,7 @@ const RightPanel = ({ className = "" }) => {
 					toast.error(data?.error || "Failed to fetch friends");
 					return;
 				}
-				console.log("friends", data.friends);
+				// console.log("friends", data.friends);
 				setFriends(data.friends);
 			} catch (error) {
 				console.error("Error while fetching friends :", error.message);

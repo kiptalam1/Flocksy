@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import toast from "react-hot-toast";
+import Loader from "./Loader";
 
 const UserCard = ({ user }) => {
 	const { user: currentUser } = useAuth();
@@ -56,7 +57,7 @@ const UserCard = ({ user }) => {
 
 			if (!res.ok) {
 				const errorData = await res.json();
-				throw new Error(errorData.error || "Failed to accept request");
+				toast.error(errorData || "Failed to accept request");
 			}
 
 			const data = await res.json();
@@ -107,20 +108,35 @@ const UserCard = ({ user }) => {
 		}
 	};
 
+	const isFallback = !user.profileImage;
+
+	const fallbackImage =
+		user.gender === "female"
+			? "/girl2.png"
+			: user.gender === "male"
+			? "/boy3.png"
+			: "/unisex-avatar.png";
+
+	const imageSrc = user.profileImage || fallbackImage;
+
+	const imageClass = isFallback
+		? "w-full h-full object-contain bg-white"
+		: "w-full h-full object-cover";
+
 	return (
 		<div className="flex flex-col items-center bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 w-full max-w-xs sm:w-60 h-72 rounded-xl shadow-md overflow-hidden">
 			<div className="w-full h-44">
 				<img
-					src={user.profileImage || "/avatar-placeholder.png"}
+					src={imageSrc}
 					alt={`${user.firstName} ${user.lastName}`}
-					className="w-full h-full object-cover"
+					className={imageClass}
 				/>
 			</div>
 			<div className="flex flex-col items-center justify-center flex-1 p-3 text-center">
 				<p className="font-semibold text-sm">
 					{user.firstName} {user.lastName}
 				</p>
-				{currentUser._id !== user._id && renderButton()}
+				{currentUser && currentUser._id !== user._id && renderButton()}
 			</div>
 		</div>
 	);
