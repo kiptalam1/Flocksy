@@ -4,6 +4,7 @@ import LandingPage from "./pages/LandingPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginForm from "./components/LoginForm";
 import HomePage from "./pages/HomePage";
+import UsersPage from "./pages/UsersPage";
 function App() {
 	return (
 		<>
@@ -12,6 +13,7 @@ function App() {
 				<Route path="/auth/login" element={<LoginForm />} />
 				<Route path="/auth/register" element={<RegisterPage />} />
 				<Route path="/home" element={<HomePage />} />
+				<Route path="/users" element={<UsersPage />} />
 			</Routes>
 			<Toaster />
 		</>

@@ -48,7 +48,6 @@ export async function acceptFriendRequest(req, res) {
 	const userId = req.user.userId;
 
 	try {
-		// find if friend request exists;
 		const request = await FriendRequest.findById(requestId);
 		if (!request || request.receiver.toString() !== userId) {
 			return res.status(404).json({ error: "Friend request not found." });
@@ -60,7 +59,6 @@ export async function acceptFriendRequest(req, res) {
 		request.status = "accepted";
 		await request.save();
 
-		// add both users as friends;
 		await User.findByIdAndUpdate(request.sender, {
 			$addToSet: { friends: request.receiver },
 		});
@@ -68,28 +66,43 @@ export async function acceptFriendRequest(req, res) {
 			$addToSet: { friends: request.sender },
 		});
 
-		return res.status(200).json({ message: "Friend request accepted." });
+		// Optional: Clean up reverse pending request
+		await FriendRequest.findOneAndDelete({
+			sender: request.receiver,
+			receiver: request.sender,
+			status: "pending",
+		});
+
+		return res.status(200).json({
+			message: "Friend request accepted.",
+			requestStatus: "accepted",
+			requestId: request._id,
+		});
 	} catch (error) {
 		console.error("Error in accept friend request", error.message);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }
 
-
 // Decline friend request
 export async function declineFriendRequest(req, res) {
-  const requestId = req.params.id;
-  const userId = req.user.userId;
+	try {
+		const requestId = req.params.id; // or req.params.requestId depending on your routes
+		const userId = req.user.userId;
 
-  const request = await FriendRequest.findById(requestId);
-  if (!request || request.receiver.toString() !== userId) {
-    return res.status(404).json({ error: "Friend request not found." });
-  }
+		const request = await FriendRequest.findById(requestId);
+		if (!request || request.receiver.toString() !== userId) {
+			return res.status(404).json({ error: "Friend request not found." });
+		}
 
-  request.status = "declined";
-  await request.save();
+		request.status = "declined";
+		await request.save();
 
-  return res.status(200).json({ message: "Friend request declined." });
+		return res.status(200).json({ message: "Friend request declined." });
+	} catch (error) {
+		console.error("Error in declineFriendRequest:", error.message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
 }
 
 // Cancel sent request

@@ -1,19 +1,62 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
 import { cloudinary } from "../utils/cloudinary.util.js";
+import FriendRequest from "../models/friendRequest.model.js";
 
 export async function getAllUsers(req, res) {
-	const userId = req.user.userId;
+	const currentUserId = req.user.userId;
 
 	try {
-		const users = await User.find({ _id: { $ne: userId } }).select("-password");
+		const users = await User.find({ _id: { $ne: currentUserId } }).select(
+			"-password"
+		);
 
-		return res.status(200).json({ users });
+		const updatedUsers = await Promise.all(
+			users.map(async (user) => {
+				let requestStatus = "none";
+
+				// check if they are already friends
+				if (user.friends.includes(currentUserId)) {
+					requestStatus = "accepted";
+				} else {
+					const existing = await FriendRequest.findOne({
+						$or: [
+							{ sender: currentUserId, receiver: user._id },
+							{ sender: user._id, receiver: currentUserId },
+						],
+					});
+
+					if (existing) {
+						if (existing.sender.toString() === currentUserId) {
+							requestStatus = "pending";
+						} else {
+							requestStatus = "incoming";
+						}
+
+						// return early if request exists to include requestId
+						return {
+							...user.toObject(),
+							requestStatus,
+							requestId: existing._id, // ✅ include request ID
+						};
+					}
+				}
+
+				// fallback if no friend request exists
+				return {
+					...user.toObject(),
+					requestStatus,
+				};
+			})
+		);
+
+		return res.status(200).json({ users: updatedUsers });
 	} catch (error) {
 		console.error("Error fetching all users", error.message);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }
+
 
 export async function getMyProfile(req, res) {
 	const userId = req.user.userId;
