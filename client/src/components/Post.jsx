@@ -150,8 +150,9 @@ const Post = ({ post }) => {
 			<div className="text-base">{post?.text}</div>
 
 			{post?.image && (
-				<div className="w-full h-max rounded-md">
+				<div className="w-full aspect-video h-max rounded-md overflow-hidden  ">
 					<img
+						loading="lazy"
 						className="w-full max-h-80 object-cover rounded-md"
 						src={post?.image}
 						alt={post?.user?.firstName}

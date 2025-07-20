@@ -30,11 +30,11 @@ const RightPanel = ({ className = "" }) => {
 	}, []);
 	return (
 		<div className={`flex flex-col gap-3 items-center ${className}`}>
-			<h2 className="text-gray-800 dark:text-gray-100 font-semibold text-lg">
-				Contacts
+			<h2 className="text-gray-800 dark:text-gray-100 font-semibold text-lg text-center mb-2 self-center">
+				Friends
 			</h2>
 			{friends &&
-				friends.map((friend) => <Contact key={friend._id} friend={friend} />)}
+				friends.map((friend) => <Contact key={friend._id} person={friend} />)}
 		</div>
 	);
 };

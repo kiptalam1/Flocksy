@@ -1,6 +1,6 @@
+import LeftPanel from "../components/LeftPanel";
 import Navbar from "../components/Navbar";
 import Posts from "../components/Posts";
-// import LeftPanel from "../components/LeftPanel"; // optional
 import RightPanel from "../components/RightPanel";
 
 const HomePage = () => {
@@ -12,7 +12,7 @@ const HomePage = () => {
 			{/* Main content */}
 			<div className="flex flex-1  px-2 sm:px-4 py-4 gap-2">
 				{/* Left sidebar (optional) */}
-				{/* <LeftPanel className="hidden md:block w-1/4" /> */}
+				<LeftPanel className="hidden md:block w-1/4 flex-shrink-0" />
 
 				{/* Main content */}
 				<div className="flex-1 flex justify-center">
