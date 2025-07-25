@@ -5,6 +5,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginForm from "./components/LoginForm";
 import HomePage from "./pages/HomePage";
 import UsersPage from "./pages/UsersPage";
+import ProfilePage from "./pages/ProfilePage";
 function App() {
 	return (
 		<>
@@ -14,6 +15,7 @@ function App() {
 				<Route path="/auth/register" element={<RegisterPage />} />
 				<Route path="/home" element={<HomePage />} />
 				<Route path="/users" element={<UsersPage />} />
+				<Route path="/profile" element={<ProfilePage />} />
 			</Routes>
 			<Toaster />
 		</>
