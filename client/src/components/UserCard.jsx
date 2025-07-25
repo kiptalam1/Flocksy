@@ -3,8 +3,9 @@ import { useAuth } from "../contexts/AuthContext";
 import toast from "react-hot-toast";
 import Loader from "./Loader";
 
-const UserCard = ({ user }) => {
+const UserCard = ({ user, onClick }) => {
 	const { user: currentUser } = useAuth();
+
 	const [requestStatus, setRequestStatus] = useState(
 		user.requestStatus || "none"
 	);
@@ -125,7 +126,7 @@ const UserCard = ({ user }) => {
 
 	return (
 		<div className="flex flex-col items-center bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 w-full max-w-xs sm:w-60 h-72 rounded-xl shadow-md overflow-hidden">
-			<div className="w-full h-44">
+			<div className="w-full h-44  cursor-pointer" onClick={onClick}>
 				<img
 					src={imageSrc}
 					alt={`${user.firstName} ${user.lastName}`}

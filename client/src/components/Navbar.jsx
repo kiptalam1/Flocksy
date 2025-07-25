@@ -1,12 +1,11 @@
-import { FiLogOut } from "react-icons/fi"; // logout icon
-import { useAuth } from "../contexts/AuthContext"; // adjust path as needed
-// import toast from "react-hot-toast";
+import { FiLogOut } from "react-icons/fi";
+import { useAuth } from "../contexts/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { House } from "lucide-react";
 import { Users } from "lucide-react";
 
 const Navbar = () => {
-	const { user, logout } = useAuth(); // assumes you have a logout function
+	const { user, logout } = useAuth();
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -16,12 +15,12 @@ const Navbar = () => {
 		<div className="flex items-center justify-between px-6 h-24 shadow-md bg-white dark:bg-gray-900 min-w-full">
 			{/* Logo */}
 			<div
-				className="flex items-center gap-2 "
+				className="flex items-center gap-2 cursor-pointer"
 				onClick={() => navigate("/home")}>
 				<img
 					src="/facebook-original.svg"
 					alt="Facebook Logo"
-					className="h-8 w-8 rounded-full object-cover cursor-pointer"
+					className="h-8 w-8 rounded-full object-cover "
 				/>
 				<span className="hidden md:inline text-lg font-semibold text-gray-800 dark:text-white">
 					Flocksy
@@ -52,7 +51,7 @@ const Navbar = () => {
 			<div className="flex items-center gap-4 mr-2">
 				<div
 					className="border-2 border-blue-500 rounded-full w-11 h-11 cursor-pointer"
-					onClick={() => navigate("/profile")}>
+					onClick={() => navigate(`/profile/${user._id}`)}>
 					<img
 						src={user?.profileImage || "/avatar-placeholder.png"}
 						className="w-10 h-10 rounded-full object-cover"

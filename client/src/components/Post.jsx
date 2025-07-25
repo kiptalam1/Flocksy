@@ -128,7 +128,7 @@ const Post = ({ post }) => {
 			<div className="flex gap-3 items-center">
 				<img
 					className="size-10 rounded-full object-cover"
-					src={post?.user?.profileImage || "avatar-placeholder.png"}
+					src={post?.user?.profileImage || "/avatar-placeholder.png"}
 					alt={post?.user?.firstName}
 				/>
 				<p className="text-base hover:underline cursor-pointer">
