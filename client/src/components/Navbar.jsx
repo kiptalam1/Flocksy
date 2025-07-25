@@ -50,7 +50,9 @@ const Navbar = () => {
 
 			{/* User + Logout */}
 			<div className="flex items-center gap-4 mr-2">
-				<div className="border-2 border-blue-500 rounded-full w-11 h-11">
+				<div
+					className="border-2 border-blue-500 rounded-full w-11 h-11 cursor-pointer"
+					onClick={() => navigate("/profile")}>
 					<img
 						src={user?.profileImage || "/avatar-placeholder.png"}
 						className="w-10 h-10 rounded-full object-cover"

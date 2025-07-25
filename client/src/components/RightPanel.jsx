@@ -3,9 +3,11 @@ import { useState } from "react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import Contact from "./Contact";
+import { useNavigate } from "react-router-dom";
 
 const RightPanel = ({ className = "" }) => {
 	const [friends, setFriends] = useState([]);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchFriends = async () => {
@@ -34,7 +36,13 @@ const RightPanel = ({ className = "" }) => {
 				Friends
 			</h2>
 			{friends &&
-				friends.map((friend) => <Contact key={friend._id} person={friend} />)}
+				friends.map((friend) => (
+					<Contact
+						key={friend._id}
+						person={friend}
+						onClick={() => navigate(`/profile/${friend._id}`)}
+					/>
+				))}
 		</div>
 	);
 };

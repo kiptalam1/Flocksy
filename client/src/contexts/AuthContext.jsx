@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 // import toast from "react-hot-toast";
 
 const AuthContext = createContext();
@@ -8,7 +8,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(true);
-	const navigate = useNavigate();
+	// const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchUser = async () => {

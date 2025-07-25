@@ -16,6 +16,7 @@ function App() {
 				<Route path="/home" element={<HomePage />} />
 				<Route path="/users" element={<UsersPage />} />
 				<Route path="/profile" element={<ProfilePage />} />
+				<Route path="/profile/:id" element={<ProfilePage />} />
 			</Routes>
 			<Toaster />
 		</>
