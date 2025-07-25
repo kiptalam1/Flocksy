@@ -73,10 +73,10 @@ const ProfileHeader = ({ user, authUser }) => {
 			</div>
 
 			<div className="pt-16 px-4 sm:px-8 pb-4">
-				<h1 className="text-xl font-bold">
+				<h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">
 					{firstName} {lastName}
 				</h1>
-				<p className="text-gray-600 dark:text-gray-400">{email}</p>
+				<p className="text-blue-400 italic text-xs">{email}</p>
 
 				<div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mt-1">
 					<IoCalendarOutline />

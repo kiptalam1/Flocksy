@@ -4,15 +4,20 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import Contact from "./Contact";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import Loader from "./Loader";
 
 const RightPanel = ({ className = "" }) => {
+	const { user: authUser } = useAuth();
+
 	const [friends, setFriends] = useState([]);
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		if (!authUser) return;
 		const fetchFriends = async () => {
 			try {
-				const res = await fetch("/api/users/friends", {
+				const res = await fetch(`/api/users/${authUser._id}/friends`, {
 					method: "GET",
 					credentials: "include",
 				});
@@ -29,7 +34,7 @@ const RightPanel = ({ className = "" }) => {
 			}
 		};
 		fetchFriends();
-	}, []);
+	}, [authUser]);
 	return (
 		<div className={`flex flex-col gap-3 items-center ${className}`}>
 			<h2 className="text-gray-800 dark:text-gray-100 font-semibold text-lg text-center mb-2 self-center">

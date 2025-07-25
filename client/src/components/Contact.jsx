@@ -10,7 +10,7 @@ const Contact = ({ person, onClick }) => {
 			<div className="flex gap-3 items-center">
 				<img
 					className="size-10 rounded-full object-cover"
-					src={person?.profileImage || "avatar-placeholder.png"}
+					src={person?.profileImage || "/avatar-placeholder.png"}
 					alt={person?.firstName}
 				/>
 				<p className="text-base ">

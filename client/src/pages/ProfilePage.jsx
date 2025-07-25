@@ -4,14 +4,18 @@ import toast from "react-hot-toast";
 import ProfileHeader from "../components/ProfileHeader";
 import { useAuth } from "../contexts/AuthContext";
 import Loader from "../components/Loader";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Post from "../components/Post";
+import Contact from "../components/Contact";
 
 const ProfilePage = () => {
 	const { id } = useParams();
 	const [profile, setProfile] = useState(null);
 	const [posts, setPosts] = useState([]);
+	const [friends, setFriends] = useState([]);
+	const [activeTab, setActiveTab] = useState("posts");
 	const { user: authUser, loading } = useAuth();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (!authUser) return;
@@ -61,6 +65,26 @@ const ProfilePage = () => {
 		getUserPosts();
 	}, [id, authUser]);
 
+	// fetch user friends;
+	useEffect(() => {
+		if (!authUser) return;
+
+		const getUserFriends = async () => {
+			try {
+				const res = await fetch(`/api/users/${id}/friends`);
+				const data = await res.json();
+				// console.log("friends :", data.friends);
+				if (!res.ok)
+					return toast.error(data?.error || "Failed to load user's friends");
+				setFriends(data.friends);
+			} catch (error) {
+				console.error("Error fetching user friends :", error.message);
+				toast.error("Something went wrong");
+			}
+		};
+		getUserFriends();
+	}, [id, authUser]);
+
 	if (loading) {
 		return (
 			<div className="min-h-screen w-full flex items-center justify-center">
@@ -74,14 +98,56 @@ const ProfilePage = () => {
 			<Navbar />
 			<ProfileHeader user={profile} authUser={authUser} />
 
+			{/* Tabs */}
+			<div className="w-full border-b border-gray-300 dark:border-gray-700 flex justify-center mt-4">
+				<div className="flex justify-between w-full max-w-xs text-sm font-medium text-center">
+					<button
+						onClick={() => setActiveTab("posts")}
+						className={`flex-1 cursor-pointer pb-2 ${
+							activeTab === "posts"
+								? "border-b-2 border-indigo-500 text-indigo-500"
+								: "text-gray-500 hover:text-indigo-400"
+						}`}>
+						Posts
+					</button>
+					<button
+						onClick={() => setActiveTab("friends")}
+						className={`flex-1 cursor-pointer pb-2 ${
+							activeTab === "friends"
+								? "border-b-2 border-indigo-500 text-indigo-500"
+								: "text-gray-500 hover:text-indigo-400"
+						}`}>
+						Friends
+					</button>
+				</div>
+			</div>
+
+			{/* Content */}
 			<main className="flex-1 flex justify-center px-4 sm:px-6 lg:px-8">
 				<div className="w-full max-w-2xl mt-4 flex flex-col gap-3">
-					{posts.length === 0 && (
-						<span className="italic text-sm self-center text-gray-300 dark:text-gray-500">
-							No posts yet
+					{activeTab === "posts" ? (
+						posts.length === 0 ? (
+							<span className="italic text-sm self-center text-gray-400">
+								No posts yet
+							</span>
+						) : (
+							posts.map((post) => <Post key={post._id} post={post} />)
+						)
+					) : friends.length === 0 ? (
+						<span className="italic text-sm self-center text-gray-400">
+							No friends yet
 						</span>
+					) : (
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+							{friends.map((friend) => (
+								<Contact
+									key={friend._id}
+									person={friend}
+									onClick={() => navigate(`/profile/${friend._id}`)}
+								/>
+							))}
+						</div>
 					)}
-					{posts && posts.map((post) => <Post key={post._id} post={post} />)}
 				</div>
 			</main>
 		</div>

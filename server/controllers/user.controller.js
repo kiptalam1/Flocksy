@@ -198,7 +198,7 @@ export async function updateProfileOrCoverImage(req, res) {
 
 
 export async function fetchUserFriends(req, res) {
-	const userId = req.user.userId;
+	const userId = req.params.id;
 
 	try {
 		const user = await User.findById(userId).select("friends");
