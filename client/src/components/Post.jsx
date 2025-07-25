@@ -6,6 +6,7 @@ import { FaRegComment } from "react-icons/fa6";
 import { FaComment } from "react-icons/fa6";
 import { formatShortTime } from "../utils/formatTime.js";
 import { useAuth } from "../contexts/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 const Post = ({ post }) => {
 	const { user } = useAuth();
@@ -14,7 +15,7 @@ const Post = ({ post }) => {
 	const [requestStatus, setRequestStatus] = useState(
 		post.requestStatus || "none"
 	);
-
+	const navigate = useNavigate();
 	const hasLiked = likes.includes(user._id);
 	const isMyPost = user._id === post.user._id;
 
@@ -116,7 +117,6 @@ const Post = ({ post }) => {
 		return "Follow";
 	};
 
-
 	const followClass = isFriend
 		? "text-red-500 hover:underline"
 		: requestStatus === "pending"
@@ -131,7 +131,9 @@ const Post = ({ post }) => {
 					src={post?.user?.profileImage || "/avatar-placeholder.png"}
 					alt={post?.user?.firstName}
 				/>
-				<p className="text-base hover:underline cursor-pointer">
+				<p
+					className="text-base hover:underline cursor-pointer"
+					onClick={() => navigate(`/profile/${post?.user?._id}`)}>
 					{post?.user?.firstName} {post?.user?.lastName}
 				</p>
 				<span className="text-xs text-gray-400">
