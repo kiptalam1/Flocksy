@@ -1,11 +1,14 @@
 import { FiLogOut } from "react-icons/fi"; // logout icon
 import { useAuth } from "../contexts/AuthContext"; // adjust path as needed
 // import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { House } from "lucide-react";
+import { Users } from "lucide-react";
 
 const Navbar = () => {
 	const { user, logout } = useAuth(); // assumes you have a logout function
 	const navigate = useNavigate();
+	const location = useLocation();
 
 	const handleLogout = () => logout(() => navigate("/"));
 
@@ -20,9 +23,29 @@ const Navbar = () => {
 					alt="Facebook Logo"
 					className="h-8 w-8 rounded-full object-cover cursor-pointer"
 				/>
-				<span className="text-lg font-semibold text-gray-800 dark:text-white">
+				<span className="hidden md:inline text-lg font-semibold text-gray-800 dark:text-white">
 					Flocksy
 				</span>
+			</div>
+			<div className="flex items-center justify-between gap-6">
+				<House
+					absoluteStrokeWidth
+					onClick={() => navigate("/home")}
+					className={`cursor-pointer hover:text-blue-500 transition ${
+						location.pathname === "/home"
+							? "text-blue-600 dark:text-blue-400"
+							: "text-gray-600 dark:text-gray-300"
+					}`}
+				/>
+				<Users
+					absoluteStrokeWidth
+					onClick={() => navigate("/users")}
+					className={`sm:hidden cursor-pointer hover:text-blue-500 transition ${
+						location.pathname === "/users"
+							? "text-blue-600 dark:text-blue-400"
+							: "text-gray-600 dark:text-gray-300"
+					}`}
+				/>
 			</div>
 
 			{/* User + Logout */}
