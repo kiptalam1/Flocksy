@@ -19,6 +19,7 @@ const ProfilePage = () => {
 
 	useEffect(() => {
 		if (!authUser) return;
+		const targetUserId = id || authUser._id;
 		const getProfile = async () => {
 			try {
 				let res;
@@ -28,7 +29,7 @@ const ProfilePage = () => {
 						credentials: "include",
 					});
 				} else {
-					res = await fetch(`/api/users/user/${id}`, {
+					res = await fetch(`/api/users/user/${targetUserId}`, {
 						method: "GET",
 						credentials: "include",
 					});
@@ -48,10 +49,11 @@ const ProfilePage = () => {
 
 	useEffect(() => {
 		if (!authUser) return;
+		const targetUserId = id || authUser._id;
 
 		const getUserPosts = async () => {
 			try {
-				const res = await fetch(`/api/posts/user/${id}`);
+				const res = await fetch(`/api/posts/user/${targetUserId}`);
 				const data = await res.json();
 				// console.log("posts :", data);
 				if (!res.ok)
@@ -68,10 +70,11 @@ const ProfilePage = () => {
 	// fetch user friends;
 	useEffect(() => {
 		if (!authUser) return;
+		const targetUserId = id || authUser._id;
 
 		const getUserFriends = async () => {
 			try {
-				const res = await fetch(`/api/users/${id}/friends`);
+				const res = await fetch(`/api/users/${targetUserId}/friends`);
 				const data = await res.json();
 				// console.log("friends :", data.friends);
 				if (!res.ok)

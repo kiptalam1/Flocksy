@@ -35,11 +35,25 @@ const RightPanel = ({ className = "" }) => {
 		};
 		fetchFriends();
 	}, [authUser]);
+
+	// if (loading) {
+	// 	return (
+	// 		<div className="min-h-screen w-full flex items-center justify-center">
+	// 			<Loader />
+	// 		</div>
+	// 	);
+	// }
+
 	return (
 		<div className={`flex flex-col gap-3 items-center ${className}`}>
 			<h2 className="text-gray-800 dark:text-gray-100 font-semibold text-lg text-center mb-2 self-center">
 				Friends
 			</h2>
+			{friends.length === 0 && (
+				<span className="text-xs text-gray-400 dark:text-gray-500">
+					No friends yet. Start following new friends.
+				</span>
+			)}
 			{friends &&
 				friends.map((friend) => (
 					<Contact
