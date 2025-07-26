@@ -16,8 +16,10 @@ const Post = ({ post }) => {
 		post.requestStatus || "none"
 	);
 	const navigate = useNavigate();
-	const hasLiked = likes.includes(user._id);
-	const isMyPost = user._id === post.user._id;
+	
+	const hasLiked = user ? likes.includes(user._id) : false;
+	const isMyPost = user?._id === post?.user?._id;
+
 
 	const handleLike = async () => {
 		const updatedLikes = hasLiked

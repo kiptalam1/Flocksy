@@ -153,46 +153,67 @@ export async function updateProfileInfo(req, res) {
 }
 
 export async function updateProfileOrCoverImage(req, res) {
-	const userId = req.user.userId;
-	const { imageType } = req.body; // expects "profile" or "cover"
-
-	if (!req.file) return res.status(400).json({ error: "No image uploaded." });
-
-	if (!["profile", "cover"].includes(imageType))
-		return res.status(400).json({ error: "Invalid image type." });
-
 	try {
+		const userId = req.user?.userId;
+		if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+		const { imageType } = req.body;
+
+		if (!req.file) return res.status(400).json({ error: "No image uploaded." });
+
+		if (!["profile", "cover"].includes(imageType))
+			return res.status(400).json({ error: "Invalid image type." });
+
 		const user = await User.findById(userId);
 		if (!user) return res.status(404).json({ error: "User not found." });
 
-		const currentImageUrl =
-			imageType === "profile" ? user.profileImage : user.coverImage;
-
-		// 🔥 Inline public_id extraction and Cloudinary deletion
-		if (currentImageUrl) {
-			const parts = currentImageUrl.split("/");
-			const filename = parts.pop().split(".")[0]; // without extension
-			const folder = parts.slice(-1)[0]; // last folder name
-			const publicId = `${folder}/${filename}`;
-
-			await cloudinary.uploader.destroy(publicId);
-		}
-
-		// Save new image URL
 		const newImageUrl = req.file.path;
+		let oldImageUrl;
+
 		if (imageType === "profile") {
+			oldImageUrl = user.profileImage;
 			user.profileImage = newImageUrl;
 		} else {
+			oldImageUrl = user.coverImage;
 			user.coverImage = newImageUrl;
 		}
 
 		await user.save();
-		return res
-			.status(200)
-			.json({ message: `${imageType} image updated`, user });
-	} catch (error) {
-		console.error("Image upload error:", error.message);
-		return res.status(500).json({ error: "Internal server error" });
+
+		res.status(200).json({
+			message: `${imageType} image updated`,
+			imageUrl: newImageUrl,
+			user: {
+				_id: user._id,
+				firstName: user.firstName,
+				lastName: user.lastName,
+				email: user.email,
+				gender: user.gender,
+				friends: user.friends,
+				createdAt: user.createdAt,
+				profileImage: user.profileImage,
+				coverImage: user.coverImage,
+			},
+		});
+
+		// Cleanup (non-blocking)
+		if (oldImageUrl) {
+			const parts = oldImageUrl.split("/");
+			const filename = parts.pop().split(".")[0];
+			const folder = parts.slice(-1)[0];
+			const publicId = `${folder}/${filename}`;
+			cloudinary.uploader
+				.destroy(publicId)
+				.catch((err) =>
+					console.error("Cloudinary deletion error:", err.message)
+				);
+		}
+	} catch (err) {
+		console.error("Image upload error:", err.stack || err.message);
+		res.status(500).json({
+			error: "Server error while uploading image",
+			details: err.message,
+		});
 	}
 }
 

@@ -23,7 +23,7 @@ const Posts = ({ className = "" }) => {
 					return;
 				}
 				// console.log("data :", data);
-				setPosts(data.posts);
+				setPosts(data?.posts);
 			} catch (error) {
 				console.error("Error fetching posts", error.message);
 				toast.error("Something went wrong");
