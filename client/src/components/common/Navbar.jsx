@@ -1,5 +1,5 @@
 import { FiLogOut } from "react-icons/fi";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { House } from "lucide-react";
 import { Users } from "lucide-react";

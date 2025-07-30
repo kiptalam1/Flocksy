@@ -1,7 +1,7 @@
 import React from "react";
 import { HiOutlineUsers } from "react-icons/hi2";
-import Contact from "./Contact";
-import { useAuth } from "../contexts/AuthContext";
+import Contact from "../common/Contact";
+import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const LeftPanel = ({ className = "" }) => {

@@ -1,8 +1,8 @@
 import React from "react";
-import Navbar from "../components/Navbar.jsx";
+import Navbar from "../components/common/Navbar.jsx";
 import Users from "../components/Users.jsx";
 import { useAuth } from "../contexts/AuthContext.jsx";
-import Loader from "../components/Loader.jsx";
+import Loader from "../components/common/Loader.jsx";
 
 const UsersPage = () => {
 	const { user, loading } = useAuth();

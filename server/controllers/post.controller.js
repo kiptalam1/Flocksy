@@ -22,7 +22,10 @@ export async function createPost(req, res) {
 			image: req.file?.path || "",
 		});
 		await post.save();
-		return res.status(201).json({ post, message: "Post created successfully" });
+		const populated = await Post.findById(post._id).populate("user");
+		return res
+			.status(201)
+			.json({ populated, message: "Post created successfully" });
 	} catch (error) {
 		console.error("Error in create Post", error.message);
 		return res.status(500).json({ error: "Internal server error" });

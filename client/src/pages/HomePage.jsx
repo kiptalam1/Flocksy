@@ -1,7 +1,8 @@
-import LeftPanel from "../components/LeftPanel";
-import Navbar from "../components/Navbar";
+import LeftPanel from "../components/pannels/LeftPanel";
+import Navbar from "../components/common/Navbar";
 import Posts from "../components/Posts";
-import RightPanel from "../components/RightPanel";
+import RightPanel from "../components/pannels/RightPanel";
+import CreatePost from "../components/common/CreatePost";
 
 const HomePage = () => {
 	return (

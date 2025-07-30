@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import LandingPage from "./pages/LandingPage";
 import RegisterPage from "./pages/RegisterPage";
-import LoginForm from "./components/LoginForm";
+import LoginForm from "./components/login/LoginForm";
 import HomePage from "./pages/HomePage";
 import UsersPage from "./pages/UsersPage";
 import ProfilePage from "./pages/ProfilePage";

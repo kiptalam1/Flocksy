@@ -2,10 +2,10 @@ import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import Contact from "./Contact";
+import Contact from "../common/Contact";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import Loader from "./Loader";
+import { useAuth } from "../../contexts/AuthContext";
+import Loader from "../common/Loader";
 
 const RightPanel = ({ className = "" }) => {
 	const { user: authUser } = useAuth();

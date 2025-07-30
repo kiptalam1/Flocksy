@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import Post from "./Post";
+import Post from "./common/Post";
 import { useAuth } from "../contexts/AuthContext";
-import Loader from "./Loader";
+import Loader from "./common/Loader";
+import CreatePost from "./common/CreatePost";
 
 const Posts = ({ className = "" }) => {
 	const [posts, setPosts] = useState([]);
@@ -35,6 +36,14 @@ const Posts = ({ className = "" }) => {
 	// if (loading) return <Loader />;
 	// if (!user) return null;
 
+	const handleNewPost = (newPost) => {
+		setPosts((prev) => [newPost, ...prev]);
+	};
+
+	const handleDeletePost = (postId) => {
+		setPosts((prev) => prev.filter((post) => post._id !== postId));
+	};
+
 	if (loading)
 		return (
 			<div className="w-screen h-screen flex items-center justify-center">
@@ -44,7 +53,12 @@ const Posts = ({ className = "" }) => {
 
 	return (
 		<div className={`flex flex-col gap-3 ${className}`}>
-			{posts && posts.map((post) => <Post key={post._id} post={post} />)}
+			<CreatePost onNewPost={handleNewPost} />
+
+			{posts &&
+				posts.map((post) => (
+					<Post key={post._id} post={post} onDelete={handleDeletePost} />
+				))}
 		</div>
 	);
 };

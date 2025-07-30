@@ -1,25 +1,27 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { SlLike } from "react-icons/sl";
+import { Trash } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 // import { FaRegComment } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa6";
 import { FaComment } from "react-icons/fa6";
-import { formatShortTime } from "../utils/formatTime.js";
-import { useAuth } from "../contexts/AuthContext.jsx";
+import { formatShortTime } from "../../utils/formatTime.js";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 
-const Post = ({ post }) => {
+const Post = ({ post, onDelete }) => {
 	const { user } = useAuth();
 	const [likes, setLikes] = useState(post.likes || []);
 	const [isFriend, setIsFriend] = useState(post.requestStatus === "accepted");
 	const [requestStatus, setRequestStatus] = useState(
 		post.requestStatus || "none"
 	);
+	const [isDeleting, setIsDeleting] = useState(false);
 	const navigate = useNavigate();
-	
+
 	const hasLiked = user ? likes.includes(user._id) : false;
 	const isMyPost = user?._id === post?.user?._id;
-
 
 	const handleLike = async () => {
 		const updatedLikes = hasLiked
@@ -119,8 +121,31 @@ const Post = ({ post }) => {
 		return "Follow";
 	};
 
+	const handleDeletePost = async () => {
+		if (!window.confirm("Delete this post?")) return;
+		setIsDeleting(true);
+		try {
+			const res = await fetch(`/api/posts/post/${post._id}`, {
+				method: "DELETE",
+				credentials: "include",
+			});
+			const data = await res.json();
+			if (!res.ok) {
+				toast.error(data?.error || "Failed to delete post");
+				return;
+			}
+			toast.success("Post deleted");
+			onDelete?.(post._id); // 🔥 key line
+		} catch (err) {
+			console.error("Delete error", err);
+			toast.error("Failed to delete");
+		} finally {
+			setIsDeleting(false);
+		}
+	};
+
 	const followClass = isFriend
-		? "text-red-500 hover:underline"
+		? "text-red-300 hover:underline"
 		: requestStatus === "pending"
 		? "text-gray-400"
 		: "text-blue-600 hover:underline";
@@ -136,11 +161,24 @@ const Post = ({ post }) => {
 				<p
 					className="text-base hover:underline cursor-pointer"
 					onClick={() => navigate(`/profile/${post?.user?._id}`)}>
-					{post?.user?.firstName} {post?.user?.lastName}
+					{post.user.firstName} {post.user.lastName}
 				</p>
 				<span className="text-xs text-gray-400">
 					{formatShortTime(post?.createdAt)}
 				</span>
+
+				{isMyPost && (
+					<button
+						onClick={handleDeletePost}
+						className="ml-auto p-1 text-gray-500 hover:text-red-600 cursor-pointer transition"
+						aria-label="Delete Post">
+						{isDeleting ? (
+							<LoaderCircle className="animate-spin w-5 h-5" />
+						) : (
+							<Trash className="w-5 h-5" />
+						)}
+					</button>
+				)}
 
 				{!isMyPost && (
 					<p

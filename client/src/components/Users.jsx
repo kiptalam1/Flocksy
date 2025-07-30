@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import fetchUsers from "../utils/allUsers.js";
 import toast from "react-hot-toast";
-import UserCard from "./UserCard.jsx";
+import UserCard from "../components/common/UserCard.jsx";
 
 const Users = () => {
 	const [users, setUsers] = useState([]);

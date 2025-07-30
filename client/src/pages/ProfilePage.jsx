@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/common/Navbar";
 import toast from "react-hot-toast";
 import ProfileHeader from "../components/ProfileHeader";
 import { useAuth } from "../contexts/AuthContext";
-import Loader from "../components/Loader";
+import Loader from "../components/common/Loader";
 import { useNavigate, useParams } from "react-router-dom";
-import Post from "../components/Post";
-import Contact from "../components/Contact";
+import Post from "../components/common/Post";
+import Contact from "../components/common/Contact";
 
 const ProfilePage = () => {
 	const { id } = useParams();
