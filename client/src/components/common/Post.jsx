@@ -8,9 +8,9 @@ import { FaRegComment } from "react-icons/fa6";
 import { FaComment } from "react-icons/fa6";
 import { formatShortTime } from "../../utils/formatTime.js";
 import { useAuth } from "../../contexts/AuthContext.jsx";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const Post = ({ post, onDelete }) => {
+const Post = ({ post, onDelete, isDetailsPage = false }) => {
 	const { user } = useAuth();
 	const [likes, setLikes] = useState(post.likes || []);
 	const [isFriend, setIsFriend] = useState(post.requestStatus === "accepted");
@@ -150,8 +150,25 @@ const Post = ({ post, onDelete }) => {
 		? "text-gray-400"
 		: "text-blue-600 hover:underline";
 
+	const postBody = (
+		<div className="mt-2">
+			<div className="text-base">{post?.text}</div>
+			{post?.image && (
+				<div className="w-full aspect-video h-max rounded-md overflow-hidden mt-2">
+					<img
+						loading="lazy"
+						className="w-full max-h-80 object-cover rounded-md"
+						src={post?.image}
+						alt={post?.user?.firstName}
+					/>
+				</div>
+			)}
+		</div>
+	);
+
 	return (
 		<div className="flex flex-col gap-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-md w-full h-auto p-4 shadow-lg">
+			{/* Header */}
 			<div className="flex gap-3 items-center">
 				<img
 					className="size-10 rounded-full object-cover"
@@ -167,7 +184,7 @@ const Post = ({ post, onDelete }) => {
 					{formatShortTime(post?.createdAt)}
 				</span>
 
-				{isMyPost && (
+				{isMyPost ? (
 					<button
 						onClick={handleDeletePost}
 						className="ml-auto p-1 text-gray-500 hover:text-red-600 cursor-pointer transition"
@@ -178,9 +195,7 @@ const Post = ({ post, onDelete }) => {
 							<Trash className="w-5 h-5" />
 						)}
 					</button>
-				)}
-
-				{!isMyPost && (
+				) : (
 					<p
 						className={`ml-auto text-sm cursor-pointer ${followClass}`}
 						onClick={handleFollowAction}>
@@ -189,19 +204,14 @@ const Post = ({ post, onDelete }) => {
 				)}
 			</div>
 
-			<div className="text-base">{post?.text}</div>
-
-			{post?.image && (
-				<div className="w-full aspect-video h-max rounded-md overflow-hidden  ">
-					<img
-						loading="lazy"
-						className="w-full max-h-80 object-cover rounded-md"
-						src={post?.image}
-						alt={post?.user?.firstName}
-					/>
-				</div>
+			{/* Content Body */}
+			{isDetailsPage ? (
+				postBody
+			) : (
+				<Link to={`/post/${post._id}`}>{postBody}</Link>
 			)}
 
+			{/* Actions */}
 			<div className="flex items-center gap-4 py-2 px-4 text-sm text-gray-600 dark:text-gray-300">
 				<div
 					onClick={handleLike}
@@ -211,9 +221,13 @@ const Post = ({ post, onDelete }) => {
 					<SlLike />
 					<span>{likes.length}</span>
 				</div>
-				<div className="flex items-center gap-1 cursor-pointer">
+
+				<Link
+					to={`/post/${post._id}`}
+					className="flex items-center gap-1 cursor-pointer hover:text-blue-500 transition-colors">
 					<FaRegComment />
-				</div>
+					{/* <span>{post.comments.length}</span> */}
+				</Link>
 			</div>
 		</div>
 	);

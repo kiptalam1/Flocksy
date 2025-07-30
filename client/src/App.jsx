@@ -6,6 +6,7 @@ import LoginForm from "./components/login/LoginForm";
 import HomePage from "./pages/HomePage";
 import UsersPage from "./pages/UsersPage";
 import ProfilePage from "./pages/ProfilePage";
+import PostDetailsPage from "./pages/PostDetailsPage";
 function App() {
 	return (
 		<>
@@ -17,6 +18,7 @@ function App() {
 				<Route path="/users" element={<UsersPage />} />
 				<Route path="/profile" element={<ProfilePage />} />
 				<Route path="/profile/:id" element={<ProfilePage />} />
+				<Route path="/post/:postId" element={<PostDetailsPage />} />
 			</Routes>
 			<Toaster />
 		</>
