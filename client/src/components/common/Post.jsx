@@ -145,7 +145,7 @@ const Post = ({ post, onDelete, isDetailsPage = false }) => {
 	};
 
 	const followClass = isFriend
-		? "text-red-300 hover:underline"
+		? "text-red-400 hover:underline"
 		: requestStatus === "pending"
 		? "text-gray-400"
 		: "text-blue-600 hover:underline";
