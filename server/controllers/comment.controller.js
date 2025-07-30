@@ -21,6 +21,7 @@ export async function createComment(req, res) {
 			post: postId,
 		});
 		await comment.save();
+		await comment.populate("user", "firstName lastName profileImage");
 
 		return res.status(201).json({ comment, message: "Comment created." });
 	} catch (error) {
@@ -28,7 +29,6 @@ export async function createComment(req, res) {
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }
-
 
 export async function deleteComment(req, res) {
 	const { id: commentId } = req.params;
@@ -53,7 +53,6 @@ export async function deleteComment(req, res) {
 	}
 }
 
-
 export async function likeUnlikeComment(req, res) {
 	const { id: commentId } = req.params;
 	const userId = req.user.userId;
@@ -73,7 +72,7 @@ export async function likeUnlikeComment(req, res) {
 			comment.likes.push(userId);
 		}
 		await comment.save();
-
+		await comment.populate("user", "firstName lastName profileImage");
 		return res.status(200).json({ message: "success", comment });
 	} catch (error) {
 		console.error("Error in likeUnlikeComment", error.message);

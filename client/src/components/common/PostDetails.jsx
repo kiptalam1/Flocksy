@@ -137,7 +137,7 @@ const PostDetails = ({ className = "" }) => {
 									<div className="flex items-center gap-4 text-xs mt-2">
 										<button
 											onClick={() => handleLikeComment(comment._id)}
-											className={`flex items-center gap-1 transition ${
+											className={`flex items-center gap-1 cursor-pointer transition ${
 												hasLiked
 													? "text-blue-600"
 													: "text-gray-500 hover:text-blue-600"
@@ -149,7 +149,7 @@ const PostDetails = ({ className = "" }) => {
 										{canDelete && (
 											<button
 												onClick={() => handleDeleteComment(comment._id)}
-												className="flex items-center gap-1 text-red-500 hover:text-red-700 transition">
+												className="flex items-center gap-1 text-red-500 hover:text-red-700 cursor-pointer transition">
 												<Trash size={16} />
 											</button>
 										)}
