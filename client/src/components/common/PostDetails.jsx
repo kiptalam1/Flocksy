@@ -119,7 +119,7 @@ const PostDetails = ({ className = "" }) => {
 									className="bg-muted p-3 rounded-lg shadow-sm relative group">
 									<div className="flex items-center gap-3 mb-2">
 										<img
-											src={comment.user.profileImage}
+											src={comment.user.profileImage || "/unisex-avatar.png"}
 											className="w-8 h-8 rounded-full object-cover"
 										/>
 										<div className="flex flex-col">

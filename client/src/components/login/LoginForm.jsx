@@ -46,7 +46,7 @@ const LoginForm = () => {
 			navigate("/home");
 		} catch (error) {
 			console.error("Error logging in user", error.message);
-			toast.error(error.message || "Something went wrong!");
+			toast.error("Something went wrong!");
 			setLoading(false);
 		}
 	};

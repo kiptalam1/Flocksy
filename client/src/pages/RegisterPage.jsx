@@ -46,7 +46,7 @@ const RegisterPage = () => {
 			setTimeout(() => navigate("/"), 0);
 		} catch (error) {
 			console.error("Error registering user", error.message);
-			toast.error(error.message || "Something went wrong");
+			toast.error("Something went wrong");
 		}
 	};
 
@@ -149,7 +149,7 @@ const RegisterPage = () => {
 					</button>
 
 					<span
-						onClick={() => navigate("/auth/login")}
+						onClick={() => navigate("/")}
 						className="text-sm self-center text-blue-600 font-sans hover:underline cursor-pointer">
 						Already have an account?
 					</span>
