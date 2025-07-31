@@ -74,7 +74,7 @@ const ProfilePage = () => {
 
 		const getUserFriends = async () => {
 			try {
-				const res = await fetch(`/api/users/${targetUserId}/friends`);
+				const res = await fetch(`/api/users/user/${targetUserId}/friends`);
 				const data = await res.json();
 				// console.log("friends :", data.friends);
 				if (!res.ok)

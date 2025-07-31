@@ -17,7 +17,7 @@ const RightPanel = ({ className = "" }) => {
 		if (!authUser) return;
 		const fetchFriends = async () => {
 			try {
-				const res = await fetch(`/api/users/${authUser._id}/friends`, {
+				const res = await fetch(`/api/users/user/${authUser._id}/friends`, {
 					method: "GET",
 					credentials: "include",
 				});
