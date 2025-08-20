@@ -20,7 +20,7 @@ const Navbar = () => {
 				<img
 					src="/flocksy_bird.svg"
 					alt="flocksy Logo"
-					className="h-8 w-8 rounded-full object-cover "
+					className="h-12 w-12 rounded-full object-cover "
 				/>
 				<span className="hidden md:inline text-lg font-semibold text-gray-800 dark:text-white">
 					Flocksy
