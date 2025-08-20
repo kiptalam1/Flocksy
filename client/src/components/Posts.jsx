@@ -47,7 +47,7 @@ const Posts = ({ className = "" }) => {
 	if (loading)
 		return (
 			<div className="w-screen h-screen flex items-center justify-center">
-				<img src="/facebook-plain.svg" className="w-10 h-10" />
+				<img src="/flocksy_bird.svg" className="w-10 h-10" />
 			</div>
 		);
 

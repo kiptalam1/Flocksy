@@ -53,7 +53,7 @@ const RegisterPage = () => {
 	return (
 		<div className="min-h-screen text-gray-800 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
 			<h1 className="font-[Poppins] mb-2 text-3xl sm:text-6xl font-bold text-blue-600 leading-tight">
-				facebook
+				flocksy
 			</h1>
 			<div className="max-w-md w-full">
 				<form

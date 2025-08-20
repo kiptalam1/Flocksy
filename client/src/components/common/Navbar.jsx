@@ -18,8 +18,8 @@ const Navbar = () => {
 				className="flex items-center gap-2 cursor-pointer"
 				onClick={() => navigate("/home")}>
 				<img
-					src="/facebook-original.svg"
-					alt="Facebook Logo"
+					src="/flocksy_bird.svg"
+					alt="flocksy Logo"
 					className="h-8 w-8 rounded-full object-cover "
 				/>
 				<span className="hidden md:inline text-lg font-semibold text-gray-800 dark:text-white">
